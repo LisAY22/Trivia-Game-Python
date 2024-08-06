@@ -6,6 +6,7 @@ global questions
 global username
 global answers
 global score
+global root
 
 
 answers = []
@@ -53,31 +54,39 @@ def final_score():
         answer_number += 1
 
 
+def close_window():
+    root.destroy()
+
+
 def main_window():
     global username
-    # Initialize the main window
-    window = tk.Tk()
-    window.title("Trivia Game")
-    window.config(bg="#5DA399")
-    window.geometry("450x250")
+    global root
+    # Initialize the main root
+    root = tk.Tk()
+    root.title("Trivia Game")
+    root.config(bg="#5DA399")
+    root.geometry("450x250")
 
-    title = tk.Label(window, text="TRIVIA GAME", font=("Helvetica", 20, "bold"), bg="#5DA399")
+    title = tk.Label(root, text="TRIVIA GAME", font=("Helvetica", 20, "bold"), bg="#5DA399")
     title.pack(pady=10)
 
-    username_label = tk.Label(window, text="USERNAME", font=("Helvetica", 18), bg="#5DA399")
+    username_label = tk.Label(root, text="USERNAME", font=("Helvetica", 18), bg="#5DA399")
     username_label.pack(pady=10)
 
     username = tk.StringVar()
-    username_entry = tk.Entry(window, textvariable=username, font=("Helvetica", 18), justify="center")
+    username_entry = tk.Entry(root, textvariable=username, font=("Helvetica", 18), justify="center")
     username_entry.pack(pady=10)
 
-    # Pass the window reference to the command
-    play_button = tk.Button(window, text="PLAY", font=("Helvetica", 18), bg="#3A1772", fg="white",
-                            command=lambda: initialize_variables_questions_window(window))
+    # Pass the root reference to the command
+    play_button = tk.Button(root, text="PLAY", font=("Helvetica", 18), bg="#3A1772", fg="white",
+                            command=lambda: initialize_variables_questions_window(root))
     play_button.pack(pady=10)
 
+    # Bind the close window event to the close_window function
+    root.protocol("WM_DELETE_WINDOW", close_window)
+
     # Start the event loop
-    window.mainloop()
+    root.mainloop()
 
 
 def questions_window(first_window):
@@ -101,6 +110,8 @@ def questions_window(first_window):
                                   final_answer(fa, question_window, question, answers_buttons))
         answer_button.pack(pady=10)
         answers_buttons.append(answer_button)
+
+    question_window.protocol("WM_DELETE_WINDOW", close_window)
 
     # Close the main window
     first_window.withdraw()
@@ -145,6 +156,8 @@ def results_window(window):
     username_label.pack(pady=10)
     score = tk.Label(result_window, text=str(score), font=("Helvetica", 20, "bold"), bg="#3A1772", width=10, fg="white")
     score.pack(pady=10)
+
+    result_window.protocol("WM_DELETE_WINDOW", close_window)
 
     window.withdraw()
 
