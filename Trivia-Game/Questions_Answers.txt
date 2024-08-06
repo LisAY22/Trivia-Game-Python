@@ -1,7 +1,7 @@
 What is the capital of Australia?
-Canberra
 Sydney
 Melbourne
+Canberra
 Brisbane
 Who wrote the play 'Romeo and Juliet'?
 William Shakespeare
@@ -9,17 +9,17 @@ Charles Dickens
 Mark Twain
 Jane Austen
 What is the largest planet in our solar system?
-Jupiter
-Earth
 Saturn
 Mars
+Jupiter
+Earth
 Which element has the chemical symbol 'O'?
-Oxygen
 Gold
 Osmium
 Oganesson
+Oxygen
 In which year did the Titanic sink?
-1912
 1905
 1923
+1912
 1898

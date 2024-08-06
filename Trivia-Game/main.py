@@ -3,6 +3,12 @@ import tkinter as tk
 
 global question_counter
 global questions
+global username
+global answers
+global score
+
+
+answers = []
 
 
 def questions_answers(s_line: int):
@@ -26,29 +32,29 @@ def initialize_variables_questions_window(window):
     questions_window(window)
 
 
-def change_question_answers(window, question, answers):
-    global question_counter
+def final_answer(answer_text, question_window, question, answers_buttons):
+    global answers
+    answers.append(answer_text)
+    change_question_answers(question_window, question, answers_buttons)
+
+
+def final_score():
     global questions
-
-    question_counter += 5
-    if question_counter != (questions * 5):
-        n = 1
-
-        q_a = questions_answers(question_counter)
-
-        # config can change the properties of a widget after it was created
-        question.config(text=q_a[0])
-        for answer in answers:
-            answer.config(text=q_a[n])
-            n += 1
-
-        # Call this function again, recursion
-        window.after(5000, change_question_answers, window, question, answers)
-    else:
-        window.destroy()
+    global answers
+    global score
+    score = 0
+    answer_number = 0
+    with open("CorrectAnswers.txt", "r") as file:
+        content = file.read()
+        lines = content.splitlines()
+    for line in lines:
+        if line.strip() == answers[answer_number].strip():
+            score += 1
+        answer_number += 1
 
 
 def main_window():
+    global username
     # Initialize the main window
     window = tk.Tk()
     window.title("Trivia Game")
@@ -89,15 +95,58 @@ def questions_window(first_window):
 
     answers_buttons = []
     for i in range(1, 5):
-        answer_button = tk.Button(question_window, text=q_a[i], font=("Helvetica", 18))
+        # lambda is a key word in Python that creates an anonym function, these functions are used once.
+        # The command parameter in a button is specifically designed to trigger a function when the button is clicked.
+        answer_button = tk.Button(question_window, text=q_a[i], font=("Helvetica", 18), command=lambda fa=q_a[i]:
+                                  final_answer(fa, question_window, question, answers_buttons))
         answer_button.pack(pady=10)
         answers_buttons.append(answer_button)
 
-    # The after() method allows you to schedule a function to be executed after a certain amount of time has passed.
-    # Syntax: delay in milliseconds, function to be called after the delay, optional arguments to pass to the function.
-    question_window.after(5000, change_question_answers, question_window, question, answers_buttons)
     # Close the main window
     first_window.withdraw()
+
+
+def change_question_answers(window, question, p_answers):
+    global question_counter
+    global questions
+
+    question_counter += 5
+    if question_counter != (questions * 5):
+        n = 1
+
+        q_a = questions_answers(question_counter)
+
+        # config can change the properties of a widget after it was created
+        question.config(text=q_a[0])
+        for answer in p_answers:
+            answer.config(text=q_a[n], command=lambda fa=q_a[n]: final_answer(fa, window, question, p_answers))
+            n += 1
+    else:
+        results_window(window)
+        window.withdraw()
+
+
+def results_window(window):
+    global username
+    global score
+    result_window = tk.Toplevel(window)
+    result_window.title("Results")
+    result_window.config(bg="#5DA399")
+    result_window.geometry("300x200")
+
+    if username.get().strip() == "":
+        username.set("UNKNOWN PLAYER")
+
+    final_score()
+
+    title_result = tk.Label(result_window, text="RESULT", font=("Helvetica", 20, "bold"), bg="#5DA399")
+    title_result.pack(pady=10)
+    username_label = tk.Label(result_window, text=username.get(), font=("Helvetica", 20, "bold"), bg="#5DA399")
+    username_label.pack(pady=10)
+    score = tk.Label(result_window, text=str(score), font=("Helvetica", 20, "bold"), bg="#3A1772", width=10, fg="white")
+    score.pack(pady=10)
+
+    window.withdraw()
 
 
 def main():
